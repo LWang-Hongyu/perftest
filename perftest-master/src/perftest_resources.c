@@ -4002,6 +4002,12 @@ int run_iter_bw_infinitely(struct pingpong_context *ctx,struct perftest_paramete
 	iteration_for_qp[0]=user_param->iteration;
 	uint32_t threshold=user_param->threshold;
 	uint32_t gap=user_param->gap;
+
+	FILE *fp = fopen("/home/why/DNN-Flow.txt", "a");
+	if (fp == NULL) {
+    perror("文件打开失败");
+    exit(EXIT_FAILURE);
+	}
 	/*why version*/
 	#ifdef HAVE_IBV_WR_API
 	if (user_param->connection_type != RawEth)
@@ -4120,12 +4126,14 @@ int run_iter_bw_infinitely(struct pingpong_context *ctx,struct perftest_paramete
 			else {
 				gettimeofday(&end,NULL);
 				printf("\n[why debug] (ending) during time(ms): %lu\n",(end.tv_sec-start.tv_sec)*1000+(end.tv_usec-start.tv_usec)/1000);
+				fprintf(fp,"\n[why debug] (ending) during time(ms): %lu\n",(end.tv_sec-start.tv_sec)*1000+(end.tv_usec-start.tv_usec)/1000);
 				goto cleaning;
 			}
 		}
 		/*why version*/
 	}
 cleaning:
+	fclose(fp);
 	free(scnt_for_qp);
 	free(wc);
 	return return_value;
